@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -g
 
 # Target executable name
-TARGET = my_program
+TARGET = list_harness
 
 # Source file and object file
 SRC = list_harness.c
