@@ -78,6 +78,12 @@ void tail(FILE *file, int remove, list_t l) {
 
 int main(int argc, char *argv[]) {
 
+    if (argc < 3 | argc > 3) {
+        printf("Too many / not enough arguments.");
+        return 1;
+
+    }
+
     FILE *file = fopen(argv[1], "r");
     //if file not found, throw error and exit
     if (file == NULL) {
