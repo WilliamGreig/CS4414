@@ -1,3 +1,5 @@
+//William Greig -- wpg6zmk
+
 #include <stdio.h>
 #include <stdlib.h>
 
