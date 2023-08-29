@@ -43,7 +43,7 @@ void tail(FILE *file, int remove, list_t l) {
             //reference for copying string val to void pointer: https://stackoverflow.com/questions/5551427/generic-data-type-in-c-void
             //reference for removing new line from fgets: https://www.geeksforgeeks.org/removing-trailing-newline-character-from-fgets-input/
             line[strcspn(line, "\n")] = '\0';
-            char* str_in = _strdup(line);
+            char* str_in = strdup(line);
             void* p = str_in;
             list_insert_tail(&l, p);
             num_elements++;
