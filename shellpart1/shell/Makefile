@@ -1,5 +1,6 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror -pedantic -Og -g -std=c++17 -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
+CXXFLAGS = -Wall -pedantic -Og -g -std=c++17 -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
+# -Werror
 
 all: msh
 
