@@ -101,12 +101,12 @@ int get_op_index(string& input, char op) {
 int get_command_word(string& input) {
     vector<string> tokens = tokenize(input);
     for (unsigned int i = 0; i < tokens.size(); i++) {
-        if (i == 0 & tokens[i] != "<" & tokens[i] != ">" ) {
+        if ( (i == 0) & (tokens[i] != "<") & (tokens[i] != ">") ) {
             return 0;
         }
         if (i != 0) {
             // look behind to check if part of redirection
-            if ( (tokens[i] != "<" & tokens[i] != ">") & (tokens[i - 1] != "<" & tokens[i - 1] != ">") ) {
+            if ( (tokens[i] != "<") & (tokens[i] != ">") & (tokens[i - 1] != "<") & (tokens[i - 1] != ">") ) {
                 return i;
             }
         }
@@ -115,19 +115,19 @@ int get_command_word(string& input) {
     return 0;
 }
 
-void parse_and_run_command(const std::string &command) {
-    /* TODO: Implement this. */
-    /* Note that this is not the correct way to test for the exit command.
-       For example the command "   exit  " should also exit your shell.
-     */
-    const char* executablePath = command.c_str();
-    const char* arguments[] = {executablePath, NULL};
-    cout << "Executing: " << command << endl;
+// void parse_and_run_command(const std::string &command) {
+//     /* TODO: Implement this. */
+//     /* Note that this is not the correct way to test for the exit command.
+//        For example the command "   exit  " should also exit your shell.
+//      */
+//     const char* executablePath = command.c_str();
+//     const char* arguments[] = {executablePath, NULL};
+//     cout << "Executing: " << command << endl;
     
-    int r = execv(executablePath, (char* const*)arguments);
-    cout << "Executed" << endl;
-    std::cerr << "Not implemented.\n";
-}
+//     int r = execv(executablePath, (char* const*)arguments);
+//     cout << "Executed" << endl;
+//     std::cerr << "Not implemented.\n";
+// }
 
 int main(void) {
     bool DEBUG = false;
@@ -167,19 +167,19 @@ int main(void) {
             }
 
             for (unsigned int j = 0; j < tokens.size(); j++) {
-                if (j != command_int & j != input_op & j != output_op & j != input_op + 1 & j != output_op + 1) {
+                if ( (j != command_int) & ((int)j != input_op) & ((int)j != output_op) & ((int)j != input_op + 1) & ((int)j != output_op + 1) ) {
                     // add argument
                     arguments.push_back(tokens[j].c_str());
                 }
             }
             arguments.push_back(nullptr);
-            // Convert the vector to a C-style array of const char*
+            // https://cplusplus.com/reference/vector/vector/data/
             const char* const* argv = arguments.data();
             int input_fd;
             if (input_op != -5) {
                 // open file -- the file should be the next index
                 if ((input_fd = open(tokens[input_op + 1].c_str(), O_RDONLY)) != -1) {
-                    // Redirect standard input to the input file
+                    // redirect stin to input file
                     dup2(input_fd, STDIN_FILENO);
                     close(input_fd);
                 } else {
@@ -192,7 +192,6 @@ int main(void) {
             if (output_op != -5) {
                 // https://man7.org/linux/man-pages/man2/open.2.html for open()
                 if ((output_fd = open(tokens[output_op + 1].c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0666)) != -1) {
-                    // Redirect standard input to the input file
                     dup2(output_fd, STDOUT_FILENO);
                     close(output_fd);
                 } else {
@@ -210,15 +209,16 @@ int main(void) {
         } else if (pid > 0) {
             int status;
             pid_t child_pid = waitpid(pid, &status, 0);
-            if (child_pid < 0) {
+            if (child_pid < 0) { //error
                 break;
             }
-
+            // https://man7.org/linux/man-pages/man2/wait.2.html -- reference for waitpid and use of status / wifexited/wifsignaled
             if (WIFEXITED(status)) {
                 cout << command << " exit status: " << WEXITSTATUS(status) << endl;
-            } else if (WIFSIGNALED(status)) {
-                cerr << command << " exit status: " << WEXITSTATUS(status) << endl;
             }
+            //  else if (WIFSIGNALED(status)) {
+            //     cerr << command << " exit status: " << WEXITSTATUS(status) << endl;
+            // }
 
         } else { //fork error
             cerr << "fork error" << endl;
