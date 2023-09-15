@@ -1,2 +1,1 @@
-#!/bin/sh
-sed -e 's/bar/XXX/'
+foo bar baz

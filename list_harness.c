@@ -19,10 +19,10 @@ void visitor(void *v) {
 
 
 void echo(FILE *file) {
-    char line[41];
+    char line[42];
     int num_lines = 0;
     //40 becuz that's max size of line -- according to instructions
-    while (fgets(line, 40, file)) {
+    while (fgets(line, 42, file)) {
         //ignore blank lines
         if (line[0] != '\n') {
             printf("%s", line);
@@ -36,10 +36,10 @@ void echo(FILE *file) {
 }
 
 void tail(FILE *file, int remove, list_t l) {
-    char line[40];
+    char line[42];
     int num_elements = 0;
     //40 becuz that's max size of line -- according to instructions
-    while (fgets(line, 40, file)) {
+    while (fgets(line, 42, file)) {
         //ignore blank lines
         if (line[0] != '\n') {
             //reference for copying string val to void pointer: https://stackoverflow.com/questions/5551427/generic-data-type-in-c-void
