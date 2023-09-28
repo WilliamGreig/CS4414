@@ -137,7 +137,7 @@ int get_command_word(string& input) {
 
 
 int main(void) {
-    // bool DEBUG = true;
+    bool DEBUG = true;
     std::string command;
     std::cout << "> ";
     while (std::getline(std::cin, command)) {
@@ -149,7 +149,7 @@ int main(void) {
             break;
         }
         vector<string> tokens = tokenize(command);
-        if ((tokens[tokens.size() - 1] == "|") | (tokens[0] == "|")) {
+        if (tokens[tokens.size() - 1] == "|" | tokens[0] == "|") {
             cerr << "invalid command" << endl;
             cout << "> ";
             continue;
@@ -173,7 +173,7 @@ int main(void) {
             continue;
         }
 
-        unsigned int num_pipeline_commands = pipeline_commands.size();
+        int num_pipeline_commands = pipeline_commands.size();
         int pipes[num_pipeline_commands][2];
         vector<pid_t> pids;
         for (unsigned int p = 0; p < num_pipeline_commands; p++) {
@@ -185,8 +185,6 @@ int main(void) {
                     // break;
                 }
             }
-        }
-        for (unsigned int p = 0; p < num_pipeline_commands; p++) {
         tokens = tokenize(pipeline_commands[p]);
         command = pipeline_commands[p];
         pid_t pid = fork();
@@ -245,50 +243,45 @@ int main(void) {
 
             if (p > 0) { // if it's not the first pipe
                 dup2(pipes[p - 1][0], STDIN_FILENO); 
+                // close(pipes[p - 1][0]); //close read end
                 close(pipes[p - 1][1]); //close write end
-                close(pipes[p - 1][0]); //close read end
             }
 
             if (p < num_pipeline_commands - 1) { //if it's not the last pipeline
                 dup2(pipes[p][1], STDOUT_FILENO); // set STDOUT 
                 close(pipes[p][0]); //close read end
-                close(pipes[p][1]); //close write end
+                // close(pipes[p][1]); //close write end
             }
             
             int r = execv(executablePath, (char* const*)argv);
 
             //ignore pipelined commands 
-            if ((r < 0) & (num_pipeline_commands == 1)) { //error in execution
+            if (r < 0 & num_pipeline_commands == 1) { //error in execution
                 cerr << "Command not found." << endl;
                 return -1;
             }
-
-
-
-
-
             return 0;
         } else if (pid > 0) {
             if (p > 0) {
+                // close(pipes[p - 1][0]);
                 close(pipes[p - 1][0]);
-                close(pipes[p - 1][1]);
             }
-            // for (int v = 0; v < num_pipeline_commands; v++) {
-            //     close(pipes[v][0]);
-            //     close(pipes[v][1]);    
-            // }
+
+            if (p < num_pipeline_commands - 1) {
+                close(pipes[p][1]);
+            }
+
+            
         } else { //fork error
             cerr << "fork error" << endl;
             std::cout << "> ";
             return -1;
-        }   
+        }
+
 
     }
-
-
     
-    for (unsigned int i = 0; i < num_pipeline_commands; i++) {
-        
+    for (int i = 0; i < num_pipeline_commands; i++) {
         int status;
         pid_t child_pid = waitpid(pids[i], &status, 0);
         if (child_pid < 0) { //error
@@ -306,4 +299,3 @@ int main(void) {
     }
     return 0;
 }
-

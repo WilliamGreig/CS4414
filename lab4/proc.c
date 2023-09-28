@@ -8,7 +8,6 @@
 #include "spinlock.h"
 #include "processesinfo.h"
 
-
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -22,31 +21,44 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-static unsigned seed = 5;
-unsigned next_random() {
-  unsigned m = 2147483647;
-  unsigned a = 16807;
-  seed = a * (seed % m);
-  return seed;
+static unsigned random_seed = 3;
+
+#define RANDOM_MAX ((1u << 31u) - 1u)
+unsigned lcg_parkmiller(unsigned *state)
+{
+    const unsigned N = 0x7fffffff;
+    const unsigned G = 48271u;
+
+    unsigned div = *state / (N / G);  /* max : 2,147,483,646 / 44,488 = 48,271 */
+    unsigned rem = *state % (N / G);  /* max : 2,147,483,646 % 44,488 = 44,487 */
+
+    unsigned a = rem * G;        /* max : 44,487 * 48,271 = 2,147,431,977 */
+    unsigned b = div * (N % G);  /* max : 48,271 * 3,399 = 164,073,129 */
+
+    return *state = (a > b) ? (a - b) : (a + (N - b));
 }
 
-//SKRTTTTT
+unsigned next_random() {
+    return lcg_parkmiller(&random_seed);
+}
+
 /* Return a random number from 0 to max */
-//max = 100000
+
 unsigned random_at_most(unsigned max) {
   unsigned num_bins = (max + 1);
-  unsigned num_rand = 100000 + 1;
+  unsigned num_rand = RANDOM_MAX + 1;
   unsigned bin_size = num_rand / num_bins;
   unsigned defect = num_rand % num_bins;
   unsigned retval;
   unsigned x;
 
   do {
-    x = next_random();
+  x = next_random();
   } while (num_rand - defect <= x);
   retval = x/bin_size;
   return retval;
 }
+
 
 //REFERENCE: https://canvas.its.virginia.edu/courses/71757/external_tools/21 (FROM PIAZZA -- instructor)
 //WHICH IS REFERRING TO: https://stackoverflow.com/questions/2509679/how-to-generate-a-random-integer-number-from-within-a-range/6852396#6852396
@@ -241,8 +253,7 @@ fork(void)
 
   //added
   np->tickets = curproc->tickets;
-  np->times_scheduled++;
-  // settickets();
+  np->times_scheduled = 0;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -370,24 +381,44 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+  int total_tickets = 0;
+  //get the total number of tickets
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      total_tickets += p->tickets;
+  }
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    //get the "winning" ticket
+    int golden_ticket = random_at_most(total_tickets);
+    //find the chosen process
+    int ticket_count = 0;
+    // cprintf("golden ticket: %d", golden_ticket);
+
+    //TEST CASE: timewithtickets 30 10 20 30 40 50
+
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-
+      
+      ticket_count += p->tickets;
+      if (ticket_count < golden_ticket) {
+        continue;
+      }
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-      p->times_scheduled += random_at_most(10000);
+      p->times_scheduled++;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -395,7 +426,9 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
+      // break;
     }
+
     release(&ptable.lock);
 
   }
