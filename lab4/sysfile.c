@@ -31,13 +31,16 @@ int sys_settickets(void) {
 }
 
 
-int sys_getprocessesinfo(void) {
-  struct processes_info *p;
-  if (argptr(1, &p, n) < 0) {
-    return -1; //error
-  }
-  return 0;
-}
+// int sys_getprocessesinfo(void) {
+//   struct processes_info *p;
+//   if (argptr(0, (void*)&p, sizeof(*p)) < 0) {
+//     return -1; //error
+
+//   }
+//   p->num_processes = 1000;
+
+//   return 0;
+// }
 
 
 int 

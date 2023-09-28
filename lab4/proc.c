@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "processesinfo.h"
 
 struct {
   struct spinlock lock;
@@ -71,8 +72,7 @@ myproc(void) {
 // state required to run in the kernel.
 // Otherwise return 0.
 static struct proc*
-allocproc(void)
-{
+allocproc(void) {
   struct proc *p;
   char *sp;
 
@@ -141,6 +141,9 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+  //ADDED
+  p->times_scheduled = 0;
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -531,4 +534,24 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+
+int sys_getprocessesinfo(void) {
+  struct processes_info *p;
+  if (argptr(0, (void*)&p, sizeof(*p)) < 0) {
+    return -1; //error
+  }
+  int count_unused = 0;
+  struct proc *v;
+
+
+  for(v = ptable.proc; v < &ptable.proc[NPROC]; v++){
+    if(v->state != UNUSED) {
+      count_unused++;
+    }
+  }
+  p->num_processes = count_unused;
+
+  return 0;
 }
