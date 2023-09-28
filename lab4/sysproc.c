@@ -7,6 +7,15 @@
 #include "mmu.h"
 #include "proc.h"
 
+int sys_settickets(void) {
+  int i;
+  if(argint(0, &i) < 0){
+    return -1;
+  }
+  myproc()->tickets = i;
+  return 0;
+}
+
 int
 sys_fork(void)
 {

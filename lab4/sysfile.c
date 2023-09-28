@@ -19,29 +19,6 @@
 
 
 static int w_count = 0;
-static int tickets = 10;
-
-int sys_settickets(void) {
-  int i;
-  if(argint(0, &i) < 0){
-    return -1;
-  }
-  tickets = i;
-  return 0;
-}
-
-
-// int sys_getprocessesinfo(void) {
-//   struct processes_info *p;
-//   if (argptr(0, (void*)&p, sizeof(*p)) < 0) {
-//     return -1; //error
-
-//   }
-//   p->num_processes = 1000;
-
-//   return 0;
-// }
-
 
 int 
 sys_writecount(void) {

@@ -8,6 +8,7 @@
 #include "spinlock.h"
 #include "processesinfo.h"
 
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -21,6 +22,38 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+static unsigned seed = 5;
+unsigned next_random() {
+  unsigned m = 2147483647;
+  unsigned a = 16807;
+  seed = a * (seed % m);
+  return seed;
+}
+
+//SKRTTTTT
+/* Return a random number from 0 to max */
+//max = 100000
+unsigned random_at_most(unsigned max) {
+  unsigned num_bins = (max + 1);
+  unsigned num_rand = 100000 + 1;
+  unsigned bin_size = num_rand / num_bins;
+  unsigned defect = num_rand % num_bins;
+  unsigned retval;
+  unsigned x;
+
+  do {
+    x = next_random();
+  } while (num_rand - defect <= x);
+  retval = x/bin_size;
+  return retval;
+}
+
+//REFERENCE: https://canvas.its.virginia.edu/courses/71757/external_tools/21 (FROM PIAZZA -- instructor)
+//WHICH IS REFERRING TO: https://stackoverflow.com/questions/2509679/how-to-generate-a-random-integer-number-from-within-a-range/6852396#6852396
+
+
+
+
 void
 pinit(void)
 {
@@ -32,6 +65,8 @@ int
 cpuid() {
   return mycpu()-cpus;
 }
+
+
 
 // Must be called with interrupts disabled to avoid the caller being
 // rescheduled between reading lapicid and running through the loop.
@@ -144,6 +179,7 @@ userinit(void)
 
   //ADDED
   p->times_scheduled = 0;
+  p->tickets = 10;
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -203,6 +239,11 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
+  //added
+  np->tickets = curproc->tickets;
+  np->times_scheduled++;
+  // settickets();
+
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
@@ -213,6 +254,7 @@ fork(void)
 
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
+  
   pid = np->pid;
 
   acquire(&ptable.lock);
@@ -345,6 +387,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      p->times_scheduled += random_at_most(10000);
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -357,6 +400,44 @@ scheduler(void)
 
   }
 }
+
+
+//OLD VERSION -- RR
+// void
+// scheduler(void)
+// {
+//   struct proc *p;
+//   struct cpu *c = mycpu();
+//   c->proc = 0;
+  
+//   for(;;){
+//     // Enable interrupts on this processor.
+//     sti();
+
+//     // Loop over process table looking for process to run.
+//     acquire(&ptable.lock);
+//     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+//       if(p->state != RUNNABLE)
+//         continue;
+
+//       // Switch to chosen process.  It is the process's job
+//       // to release ptable.lock and then reacquire it
+//       // before jumping back to us.
+//       c->proc = p;
+//       switchuvm(p);
+//       p->state = RUNNING;
+
+//       swtch(&(c->scheduler), p->context);
+//       switchkvm();
+
+//       // Process is done running for now.
+//       // It should have changed its p->state before coming back.
+//       c->proc = 0;
+//     }
+//     release(&ptable.lock);
+
+//   }
+// }
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
@@ -544,14 +625,19 @@ int sys_getprocessesinfo(void) {
   }
   int count_unused = 0;
   struct proc *v;
-
-
+  acquire(&ptable.lock);
+  int i = 0;
   for(v = ptable.proc; v < &ptable.proc[NPROC]; v++){
     if(v->state != UNUSED) {
       count_unused++;
+      p->pids[i] = v->pid;
+      p->times_scheduled[i] = v->times_scheduled;
+      p->tickets[i] = v->tickets;
     }
+    i++;
   }
   p->num_processes = count_unused;
-
+  release(&ptable.lock);
   return 0;
 }
+
