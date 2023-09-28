@@ -21,7 +21,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-static unsigned random_seed = 3;
+static unsigned random_seed = 1;
 
 #define RANDOM_MAX ((1u << 31u) - 1u)
 unsigned lcg_parkmiller(unsigned *state)
@@ -253,7 +253,7 @@ fork(void)
 
   //added
   np->tickets = curproc->tickets;
-  np->times_scheduled = 0;
+  // np->times_scheduled = 0;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -367,6 +367,15 @@ wait(void)
   }
 }
 
+unsigned abs(unsigned n) {
+  if (n < 0) {
+    return n * -1;
+  } else {
+    return n;
+  }
+}
+
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -381,44 +390,45 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  int total_tickets = 0;
-  //get the total number of tickets
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
-      total_tickets += p->tickets;
-  }
+
 
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
+    unsigned int total_tickets = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      total_tickets = total_tickets + p->tickets;
+    }
+
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
+    
     //get the "winning" ticket
-    int golden_ticket = random_at_most(total_tickets);
+    unsigned int golden_ticket = random_at_most(total_tickets);
     //find the chosen process
     int ticket_count = 0;
-    // cprintf("golden ticket: %d", golden_ticket);
 
     //TEST CASE: timewithtickets 30 10 20 30 40 50
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-      
+
       ticket_count += p->tickets;
-      if (ticket_count < golden_ticket) {
+      if (ticket_count <= golden_ticket) {
         continue;
       }
+      p->times_scheduled++;
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
       c->proc = p;
+      
       switchuvm(p);
       p->state = RUNNING;
-      p->times_scheduled++;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -426,7 +436,7 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
-      // break;
+      break;
     }
 
     release(&ptable.lock);
@@ -453,6 +463,8 @@ scheduler(void)
 //       if(p->state != RUNNABLE)
 //         continue;
 
+//       //TEST CASE: timewithtickets 30 10 20 30 40 50
+
 //       // Switch to chosen process.  It is the process's job
 //       // to release ptable.lock and then reacquire it
 //       // before jumping back to us.
@@ -462,6 +474,7 @@ scheduler(void)
 
 //       swtch(&(c->scheduler), p->context);
 //       switchkvm();
+//       p->times_scheduled = random_at_most(20);
 
 //       // Process is done running for now.
 //       // It should have changed its p->state before coming back.
