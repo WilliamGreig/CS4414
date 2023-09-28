@@ -1,0 +1,14 @@
+Jacob Lear
+jl7yst
+I helped Will by giving him advice on writing the code for settickets and the lottery scheduler functionality. I was looking back through piazza, assignment documents, xv6 documents, and other information to help out Will. I also helped in the information with using the gdb debugger to see what the program was doing.
+
+
+
+William Greig
+wpg6zmk
+I worked with Dhruv and Jacob in implementing the settickets and the lottery scheduler algorithm. I struggled a lot with implementation for the scheduler – however, both Jacob and Dhruv were instrumental in debugging/finalizing the algorithm.
+
+
+Dhruv Patro
+Dkp2e
+I worked with Will and Jacob by giving advice and providing discussion. We were mainly focused on implementing the actual lottery scheduling and so we were trying to figure out why the code wasn’t passing a couple of the tests. I helped do research and looked through instruction and specific topics to help out.
