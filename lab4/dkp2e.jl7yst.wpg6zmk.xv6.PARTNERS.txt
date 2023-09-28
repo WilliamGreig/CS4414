@@ -1,0 +1,21 @@
+Jacob Lear
+jl7yst
+I figured out the functionality behind argint and got setwritecount to reset writecount’s counter. 
+Dhruv and Will set up the sys calls to be ready to use by xv6 in all the other files, while I added writecount.c 
+and edited both setwritecount.c and syscall.c (both methods specifically). 
+
+
+Dhruv Patro
+dkp2e
+I set up the xv6 to run using the terminal at first. I then switched to VSCode with the help of Will. 
+Will and I then went to office hours where we both worked on the function writecount with both of us
+ thinking and asking the TA for help. We also worked on implementing the setwritecount function but were
+  unable to figure it out. Later I worked with Jacob to work on what we had for setwritecount and fix it to 
+  have the function successfully change the count number to what we specify it to.
+
+William Greig
+wpg6zmk
+ I worked primarily with Dhruv in setting up the writecount function. We worked in tandem to create, test, 
+ and troubleshoot issues with the writecount function. Eventually, we got it working. We did work to implement 
+ the setwritecount function however I couldn't figure out how to set the value correctly. Dhruv and Jacob finished 
+ the setwritecount method later.
