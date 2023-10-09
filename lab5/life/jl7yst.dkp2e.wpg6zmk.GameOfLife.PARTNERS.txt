@@ -1,0 +1,14 @@
+Jacob Lear
+jl7yst
+I assisted Will, who wrote the code, in the logic for dividing the LifeBoard and using pthreads. There was other logic with dynamic memory allocation, variable locality issues, and barrier placement that I helped with. Additionally, I helped with the math for dividing the LifeBoard between the threads coordinatewise.
+
+
+
+William Greig
+wpg6zmk
+I worked with Dhruv and Jacob in implementing the setting up the threads and parallelzing the program. I worked with Jacob in splitting the grid into separate components and worked with both Dhruv and Jacob in debugging the program – which comprised most the assignment. 
+
+
+Dhruv Patro
+Dkp2e
+Will was the main person who coded the assignment. I worked with Will and Jacob to talk about the logic when it came to multiple parts of the assignment. This includes splitting up the lifeboard using pthreads, getting the state value updated to be swapped with new_state, and optimizing the program to be faster using x and y. Overall, we discussed and with the help we were able to get the program to work. 
