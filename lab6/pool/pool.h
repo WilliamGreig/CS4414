@@ -26,7 +26,7 @@ public:
     int num_minions;
 
     pthread_mutex_t lock; //= PTHREAD_MUTEX_INITIALIZER;
-    pthread_cond_t stop_cond;
+    pthread_mutex_t stop_cond;
     pthread_cond_t data_ready; // = PTHREAD_COND_INITIALIZER;
     std::list<Task*> taskQueue;
     // std::list<Task*> garbageQueue;
@@ -34,7 +34,7 @@ public:
     bool stop;
     ThreadPool(int num_threads);
 
-    pthread_barrier_t barrier;
+    // pthread_barrier_t barrier;
 
     // void *WorkerFunction(void* args);
 

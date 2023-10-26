@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-Wall -pedantic -std=c++17 -ggdb -Og -fsanitize=address -fsanitize=undefined
+CXXFLAGS=-Wall -pedantic -std=c++17 -ggdb -Og -fsanitize=address -fsanitize=undefined -g
 CXXFLAGS_TSAN=-Wall -pedantic -std=c++17 -ggdb -Og -fsanitize=thread -D_GLIBCXX_DEBUG
 
 all: pool-test pool-test-tsan

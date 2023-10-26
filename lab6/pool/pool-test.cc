@@ -90,7 +90,7 @@ struct CheckDestructionTask : Task {
 };
 
 std::string current_test{"<none>"};
-bool DEBUG = false;
+bool DEBUG = true;
 int passed_subtests = 0;
 int failed_subtests = 0;
 int passed_tests = 0;
