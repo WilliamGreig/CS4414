@@ -20,6 +20,7 @@ void *WorkerFunction(void* ptr) {
             pthread_cond_wait(&(tp->data_ready), &(tp->lock));
             
             if (tp->stop == true) {
+                pthread_barrier_wait(&(tp->barrier));
                 // cease execution
                 return 0;
             }
@@ -59,7 +60,7 @@ ThreadPool::ThreadPool(int num_threads) {
 
 // produce Task
 void ThreadPool::SubmitTask(const std::string &name, Task* task) {
-    pthread_mutex_lock(&lock);
+    // pthread_mutex_lock(&lock);
     taskQueue.push_back(task);
     task->taskName = name;
     task->done = false;
@@ -68,7 +69,7 @@ void ThreadPool::SubmitTask(const std::string &name, Task* task) {
     task->taskVar = PTHREAD_COND_INITIALIZER;
     taskMap.insert({name, task});
     pthread_cond_signal(&data_ready);
-    pthread_mutex_unlock(&lock);
+    // pthread_mutex_unlock(&lock);
 }
 
 void ThreadPool::WaitForTask(const std::string &name) {
@@ -85,8 +86,8 @@ void ThreadPool::WaitForTask(const std::string &name) {
 void ThreadPool::Stop() {
     stop = true;
     for (int i = 0; i < num_minions; i++) {
-        pthread_cond_broadcast(&data_ready); //deadlocks elsewhere
-        int a = pthread_join(threadPool[i], NULL); //deadlocks in worker thread
+        pthread_cond_signal(&data_ready); //deadlocks elsewhere
+        // int a = pthread_join(threadPool[i], NULL); //deadlocks in worker thread
     }
         // cout << threadPool[i] << endl;
     // pthread_cond_broadcast(&data_ready);
