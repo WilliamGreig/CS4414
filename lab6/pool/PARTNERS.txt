@@ -1,0 +1,11 @@
+Jacob Lear
+jl7yst
+Will wrote the code for the assignment with advice from me and Dhruv. I primarily helped concerning the logic for memory leaks and synchronization of threads involving locks during Will’s process of debugging.  
+
+William Greig
+wpg6zmk
+I worked on implementing the ThreadPool class including the WorkerFunction, Stop, WaitForTask, and SubmitTask. I worked with Dhruv and Jacob to debug the code -- specifically with regard setting the thread flag -- as well as some memory allocation/deallocation issues.
+
+Dhruv Patro
+Dkp2e
+Will was the main person who coded the assignment. I worked with Will and Jacob to talk about the logic when it came to multiple parts of the assignment and assisted while Will did the main coding. This includes the logic when it comes to stops, condition variables, mutexes, waiting, and more. I went to office hours to clarify a problem that we had in regards to data racing and stops. I got advice from Professor Skadron and we were able to fix our problems for the assignment.

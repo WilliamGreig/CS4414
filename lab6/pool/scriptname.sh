@@ -1,0 +1,60 @@
+#!/bin/bash
+#Run this in terminal
+#+ Command to compile c++ program. here i used common one
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test-tsan long
+./pool-test long
+./pool-test long
+./pool-test long
+./pool-test long
+./pool-test long
+./pool-test long
+./pool-test long
+
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test-tsan short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+./pool-test short
+
+exit 0

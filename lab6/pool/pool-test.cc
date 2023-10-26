@@ -90,7 +90,7 @@ struct CheckDestructionTask : Task {
 };
 
 std::string current_test{"<none>"};
-bool DEBUG = true;
+bool DEBUG = false;
 int passed_subtests = 0;
 int failed_subtests = 0;
 int passed_tests = 0;
@@ -388,7 +388,7 @@ int main(int argc, char **argv) {
         test_run_in_order(1, 10, false, true);
         test_run_in_order(1, 10, true, false);
         test_run_in_order(1, 10, true, true);
-        test_run_in_order(10, 5, true, true);
+        test_run_in_order(40, 50000, true, true);
         test_run_in_order(2, 10, false, false);
         test_run_in_order(2, 10, false, true);
         test_run_in_order(2, 10, true, false);
