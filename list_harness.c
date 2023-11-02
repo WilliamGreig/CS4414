@@ -78,31 +78,39 @@ void tail(FILE *file, int remove, list_t l) {
 
 int main(int argc, char *argv[]) {
 
-    if (argc < 3 | argc > 3) {
-        printf("Too many / not enough arguments.");
-        return 1;
+    // if (argc < 3 | argc > 3) {
+    //     printf("Too many / not enough arguments.");
+    //     return 1;
 
-    }
+    // }
 
     FILE *file = fopen(argv[1], "r");
+    FILE *file2 = fopen(argv[1], "r");
     //if file not found, throw error and exit
     if (file == NULL) {
         printf("Error opening file %s\n", argv[1]);
         return 1;
     }
 
-    list_t l;
-    list_init(&l, compare, datum_delete);
+    char buf[1024];
+    char hello[1024];
+    fgets(buf, 6, file);
+    fgets(hello, 6, file2);
+    printf("%s ", buf);
+    printf("%s ", hello);
+    
+    // list_t l;
+    // list_init(&l, compare, datum_delete);
 
-    if (strcmp(argv[2], "echo") == 0) {
-        echo(file);
-    } else if (strcmp(argv[2], "tail") == 0) {
-        tail(file, 0, l);
-    } else if (strcmp(argv[2], "tail-remove") == 0) {
-        tail(file, 1, l);
-    } else {
-        printf("Invalid arguments");
-    }
+    // if (strcmp(argv[2], "echo") == 0) {
+    //     echo(file);
+    // } else if (strcmp(argv[2], "tail") == 0) {
+    //     tail(file, 0, l);
+    // } else if (strcmp(argv[2], "tail-remove") == 0) {
+    //     tail(file, 1, l);
+    // } else {
+    //     printf("Invalid arguments");
+    // }
 
     //close file
     fclose(file);

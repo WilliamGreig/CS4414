@@ -189,6 +189,7 @@ void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
+extern pde_t*   walkpgdir(pde_t*, void*, uint); //added...
 
 
 // number of elements in fixed-size array

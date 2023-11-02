@@ -666,9 +666,14 @@ int sys_getpagetableentry(void) {
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
       if(p->pid == t_pid) {
-        
+        pte_t* temp = walkpgdir(p->pgdir, (void*)address, 1);
+        uint a;
+        a = PTE_ADDR(*temp);
+        if (a == 0) {
+          return 0;
+        }
         release(&ptable.lock);
-        return 0;
+        return a;
     }
   }
 
