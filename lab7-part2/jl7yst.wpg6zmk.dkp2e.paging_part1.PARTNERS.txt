@@ -1,0 +1,11 @@
+Jacob Lear
+jl7yst
+Me and Dhruv helped Will as he wrote the code. Specifically, I helped give advice and research xv6 information to Will as he wrote the code for the three new sys calls. Most of what I helped with was working out the logic to get the PTE in getpagetableentry and checking a PPN inisphysicalpagefree.
+
+William Greig
+wpg6zmk
+I worked on coding the three system calls. Jacob and Dhruv helped debug both getpagetableentry and isphysicalpagefree, specifically how to convert the specific virtual addresses to physical addresses and such.
+
+Dhruv Patro
+Dkp2e
+Will was the one who did the coding on his end. I mainly helped and assisted with the problems we had. We had issues with trying to get the PPN and working out the logic to get the PTE in getpagetableentry. We also had to convert the virtual address to the physical address.
